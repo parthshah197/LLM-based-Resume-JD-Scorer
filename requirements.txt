@@ -2,9 +2,9 @@
 torch
 torchvision
 torchaudio
-
 streamlit
 PyPDF2
 python-dotenv
 accelerate
 transformers
+bitsandbytes

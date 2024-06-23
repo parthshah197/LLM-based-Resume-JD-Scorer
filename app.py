@@ -6,9 +6,16 @@ import streamlit as st
 import os
 import PyPDF2 as pdf
 import json
+from dotenv import load_dotenv
 
-# Set Hugging Face Token
-hf_token = "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"
+
+load_dotenv() ## load our environment variables
+
+
+# Loading Hugging Face Token
+hf_token = os.getenv('HUGGINGFACE_TOKEN')
+if not hf_token:
+    st.error("No token provided. Please sent the HUGGINGFACE_TOKEN environment variable")
 
 # Setting up CUDA if available
 accelerator = Accelerator()
@@ -17,9 +24,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # Initialize LLama/any other LLM model and tokenizer
+# cache_dir - replace with the directory where you want to cache the model. It is an optional param and you can remove it.
+# If you are running docker container, it'll create the directory mentioned as cache_dir's value. you can set it to /app 
+
 model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
 model = AutoModelForCausalLM.from_pretrained( model_name,
-                                                 cache_dir="/Users/parth/Downloads\AIML Projects/LLM",
+                                                 cache_dir="/Users/parth/Downloads/AIML Projects/LLM",
                                                  device_map='auto',
                                                  token=hf_token
                                                  , torch_dtype= "auto"
@@ -27,7 +37,7 @@ model = AutoModelForCausalLM.from_pretrained( model_name,
 
 tokenizer = AutoTokenizer.from_pretrained(model_name,
                                           token=hf_token
-                                          ,cache_dir="/Users/parth/Downloads\AIML Projects/LLM"
+                                          ,cache_dir="/Users/parth/Downloads/AIML Projects/LLM"
                                          )
 
 # Upload and read the resume in PDF format
